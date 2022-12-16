@@ -1,0 +1,45 @@
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Todo</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                Todo
+            </div>
+            <div class="card-body">
+                <div class="input-group mt-3 mb-3" id="taskFormBox">
+                    <input type="text" class="form-control" id="task" placeholder="Görev" aria-label="Görev" aria-describedby="createNewTaskBtn">
+                    <button class="btn btn-primary" type="button" id="createNewTaskBtn" onclick="createNewTask();">Ekle</button>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-3">
+            <div class="card-header">
+                <ul class="nav nav-pills card-header-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active fs-6" href="#">Tümü</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Devam Eden Görevler</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Tamamlanan Görevler</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body" id="taskList"></div>
+        </div>
+    </div>
+    <script src="js/bootstrap.bundle.js"></script>
+    <script src="js/languages/tr.js"></script>
+    <script src="js/functions.js"></script>
+    <script src="js/task.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>
