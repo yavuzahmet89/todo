@@ -1,27 +1,20 @@
 "use-strict";
 
 var task = new Task();
-var tasks = task.getTasks();
+
+var taskInputs = document.querySelector('#taskInputs');
+var taskInput = taskInputs.querySelector('#task');
 var taskList = document.querySelector('#taskList');
 
 document.addEventListener('DOMContentLoaded', function() {
-    if (tasks.length) {
-        loadDomTasks(tasks);
+    if (task.getTasks().length) {
+        getTasks(task.getTasks());
     } else {
         taskList.innerHTML = getAlertMessage('warning', languageMessages.taskNotFound);
     }
 });
 
-function createNewTask() {
-    let taskInput = document.getElementById('task');
-    let createResult = task.createNewTask(taskInput.value);
-
-    if (createResult) {
-        loadDomTasks(task.getTasks());
-    }
-}
-
-function loadDomTasks(tasks) {
+function getDOMTasks(tasks) {
     let html = '<ul class="list-group">';
 
     for (const task of tasks) {
@@ -30,7 +23,7 @@ function loadDomTasks(tasks) {
                 <input class="form-check-input me-1" type="checkbox" value="1" id="task${task.id}">
                 <label class="form-check-label" for="task${task.id}">${task.task}</label>
                 <button type="button" class="btn btn-danger btn-sm float-end" onclick="deleteTask('${task.id}');">${languageMessages.delete}</button>
-                <button type="button" class="btn btn-warning btn-sm float-end me-lg-1" onclick="getTask('${task.id}');">${languageMessages.edit}</button>
+                <button type="button" class="btn btn-warning btn-sm float-end me-lg-1" onclick="getDOMTask('${task.id}');">${languageMessages.edit}</button>
             </li>
         `;
     }
@@ -38,5 +31,43 @@ function loadDomTasks(tasks) {
     html += '</ul>';
 
     taskList.innerHTML = html;
-    document.getElementById('task').value = '';
+}
+
+function getDOMTask(id) {
+    let currentTask = task.getTask(id);
+    taskInput.value = currentTask.task;
+    taskInputs.querySelector('button').remove();
+    taskInputs.insertAdjacentHTML('beforeend', getEditButton(id));
+}
+
+function getAddButton() {
+    return `<button class="btn btn-primary" type="button" id="createNewTaskBtn" onclick="createNewDOMTask();">${languageMessages.add}</button>`;
+}
+
+function getEditButton(id) {
+    return `<button class="btn btn-primary" type="button" id="editTaskBtn" onclick="editDOMTask('${id}');">${languageMessages.edit}</button>`;
+}
+
+function resetForm() {
+    taskInput.value = '';
+    taskInputs.querySelector('button').remove();
+    taskInputs.insertAdjacentHTML('beforeend', getAddButton());
+}
+
+function createNewDOMTask() {
+    let createResult = task.createNewTask(taskInput.value);
+
+    if (createResult) {
+        getDOMTasks(task.getTasks());
+        taskInput.value = '';
+    }
+}
+
+function editDOMTask(id) {
+    let editResult = task.editTask(id, taskInput.value);
+
+    if (editResult) {
+        getDOMTasks(task.getTasks());
+        resetForm();
+    }
 }

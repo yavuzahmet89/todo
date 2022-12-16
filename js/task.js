@@ -22,7 +22,7 @@ class Task {
     }
 
     createNewTask(task) {
-        if (task == '') {
+        if (task.trim() == '') {
             return null;
         }
 
@@ -30,10 +30,27 @@ class Task {
 
         let taskData = {
             "id": ++length,
-            "task": task,
+            "task": task.trim(),
             "status": this.statuses.pending
         };
 
         return this.tasks.push(taskData);
+    }
+
+    editTask(id, task) {
+        let currentTask = this.getTask(id);
+
+        if (!currentTask) {
+            return null;
+        }
+
+        let taskData = {
+            "id": currentTask.id,
+            "task": typeof task !== 'undefined' && task.trim() != '' ? task.trim() : currentTask.task,
+            "status": typeof task.status !== 'undefined' ? task.status : currentTask.status
+        };
+
+        this.tasks[currentTask.id - 1] = taskData;
+        return true;
     }
 }
