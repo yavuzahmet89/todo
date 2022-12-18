@@ -11,25 +11,52 @@ class Task {
         return this.tasks;
     }
 
-    getTask(id) {
+    getTaskById(id) {
+        if (typeof id === 'undefined' || typeof this.tasks === 'undefined') {
+            return null;
+        }
+
         for (const task of this.tasks) {
             if (task.id == id) {
                 return task;
             }
         }
 
-        return 0;
+        return null;
     }
 
-    createNewTask(task) {
-        if (task.trim() == '') {
+    getTaskByIndex(index) {
+        if (typeof this.tasks[index] !== 'undefined' && typeof this.tasks[index] === 'object') {
+            return this.tasks[index];
+        }
+
+        return null;
+    }
+
+    getTaskIndexById(id) {
+        if (typeof id === 'undefined' || typeof this.tasks === 'undefined') {
             return null;
         }
 
-        let length = this.tasks.length;
+        for (const index in this.tasks) {
+            if (this.tasks[index].id == id) {
+                return index;
+            }
+        }
+
+        return null;
+    }
+
+    createNewTask(task) {
+        if (typeof task === 'undefined' || task.trim() == '') {
+            return null;
+        }
+
+        let lastTask = this.getTaskByIndex(this.tasks.length - 1);
+        let id = lastTask ? lastTask.id : 0;
 
         let taskData = {
-            "id": ++length,
+            "id": ++id,
             "task": task.trim(),
             "status": this.statuses.pending
         };
@@ -38,7 +65,11 @@ class Task {
     }
 
     editTask(id, task) {
-        let currentTask = this.getTask(id);
+        if (typeof id === 'undefined' || typeof task === 'undefined' || task.trim() == '') {
+            return null;
+        }
+
+        let currentTask = this.getTaskById(id);
 
         if (!currentTask) {
             return null;
@@ -46,11 +77,33 @@ class Task {
 
         let taskData = {
             "id": currentTask.id,
-            "task": typeof task !== 'undefined' && task.trim() != '' ? task.trim() : currentTask.task,
-            "status": typeof task.status !== 'undefined' ? task.status : currentTask.status
+            "task": task.trim(),
+            "status": currentTask.status
         };
 
-        this.tasks[currentTask.id - 1] = taskData;
+        let index = this.getTaskIndexById(id);
+        this.tasks[index] = taskData;
+
+        return true;
+    }
+
+    deleteTask(id) {
+        if (typeof id === 'undefined') {
+            return null;
+        }
+
+        let index = this.getTaskIndexById(id);
+
+        if (!index) {
+            return null;
+        }
+
+        let task = this.tasks.splice(index, 1);
+
+        if (typeof task !== 'object') {
+            return false;
+        }
+
         return true;
     }
 }

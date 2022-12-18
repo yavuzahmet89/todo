@@ -15,26 +15,30 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function getDOMTasks(tasks) {
-    let html = '<ul class="list-group">';
+    if (typeof task !== 'undefined' && tasks.length) {
+        let html = '<ul class="list-group">';
 
-    for (const task of tasks) {
-        html += `
-            <li class="list-group-item" id="list-group-item-${task.id}">
-                <input class="form-check-input me-1" type="checkbox" value="1" id="task${task.id}">
-                <label class="form-check-label" for="task${task.id}">${task.task}</label>
-                <button type="button" class="btn btn-danger btn-sm float-end" onclick="deleteTask('${task.id}');">${languageMessages.delete}</button>
-                <button type="button" class="btn btn-warning btn-sm float-end me-lg-1" onclick="getDOMTask('${task.id}');">${languageMessages.edit}</button>
-            </li>
-        `;
+        for (const task of tasks) {
+            html += `
+                <li class="list-group-item" id="list-group-item-${task.id}">
+                    <input class="form-check-input me-1" type="checkbox" value="1" id="task${task.id}">
+                    <label class="form-check-label" for="task${task.id}">${task.task}</label>
+                    <button type="button" class="btn btn-danger btn-sm float-end" onclick="deleteDOMTask('${task.id}');">${languageMessages.delete}</button>
+                    <button type="button" class="btn btn-warning btn-sm float-end me-lg-1" onclick="getDOMTask('${task.id}');">${languageMessages.edit}</button>
+                </li>
+            `;
+        }
+
+        html += '</ul>';
+
+        taskList.innerHTML = html;
+    } else {
+        taskList.innerHTML = getAlertMessage('warning', languageMessages.taskNotFound);
     }
-
-    html += '</ul>';
-
-    taskList.innerHTML = html;
 }
 
 function getDOMTask(id) {
-    let currentTask = task.getTask(id);
+    let currentTask = task.getTaskById(id);
     taskInput.value = currentTask.task;
     taskInputs.querySelector('button').remove();
     taskInputs.insertAdjacentHTML('beforeend', getEditButton(id));
@@ -48,10 +52,13 @@ function getEditButton(id) {
     return `<button class="btn btn-primary" type="button" id="editTaskBtn" onclick="editDOMTask('${id}');">${languageMessages.edit}</button>`;
 }
 
-function resetForm() {
+function resetForm(type = 'create') {
     taskInput.value = '';
-    taskInputs.querySelector('button').remove();
-    taskInputs.insertAdjacentHTML('beforeend', getAddButton());
+
+    if (type == 'edit') {
+        taskInputs.querySelector('button').remove();
+        taskInputs.insertAdjacentHTML('beforeend', getAddButton());
+    }
 }
 
 function createNewDOMTask() {
@@ -59,7 +66,7 @@ function createNewDOMTask() {
 
     if (createResult) {
         getDOMTasks(task.getTasks());
-        taskInput.value = '';
+        resetForm();
     }
 }
 
@@ -68,6 +75,15 @@ function editDOMTask(id) {
 
     if (editResult) {
         getDOMTasks(task.getTasks());
-        resetForm();
+        resetForm('edit');
+    }
+}
+
+function deleteDOMTask(id) {
+    let deleteResult = task.deleteTask(id);
+
+    if (deleteResult) {
+        getDOMTasks(task.getTasks());
+        resetForm('edit');
     }
 }
