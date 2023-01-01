@@ -7,8 +7,28 @@ class Task {
         "completed": "completed"
     };
 
-    getTasks() {
-        return this.tasks;
+    getTasks(key = '', value = '') {
+        return this.getTasksByKey(key, value);
+    }
+
+    getTasksByKey(key = '', value = '') {
+        if (key === '' && value === '') {
+            return this.tasks;
+        }
+
+        if (typeof this.tasks[0][key] === 'undefined') {
+            return null;
+        }
+
+        let tasks = [];
+
+        for (let i = 0; i < this.tasks.length; i++) {
+            if (this.tasks[i][key] === value) {
+                tasks.push(this.tasks[i]);
+            }
+        }
+
+        return tasks;
     }
 
     getTaskById(id) {
@@ -64,8 +84,8 @@ class Task {
         return this.tasks.push(taskData);
     }
 
-    editTask(id, task) {
-        if (typeof id === 'undefined' || typeof task === 'undefined' || task.trim() == '') {
+    editTask(id, key, value) {
+        if (typeof id === 'undefined' || typeof key === 'undefined' || typeof value === 'undefined') {
             return null;
         }
 
@@ -77,8 +97,8 @@ class Task {
 
         let taskData = {
             "id": currentTask.id,
-            "task": task.trim(),
-            "status": currentTask.status
+            "task": key === 'task' ? value : currentTask.task,
+            "status": key === 'status' ? value : currentTask.status
         };
 
         let index = this.getTaskIndexById(id);

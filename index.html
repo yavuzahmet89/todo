@@ -21,15 +21,15 @@
         </div>
         <div class="card mt-3">
             <div class="card-header">
-                <ul class="nav nav-pills card-header-pills">
-                    <li class="nav-item">
-                        <a class="nav-link active fs-6" href="#">Tümü</a>
+                <ul class="nav nav-pills card-header-pills" id="statusTypes">
+                    <li class="nav-item status-type">
+                        <a class="nav-link all" href="javascript:;" onclick="getDOMTasksByStatus(this);">Tümü</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Devam Eden Görevler</a>
+                    <li class="nav-item status-type">
+                        <a class="nav-link pending active" href="javascript:;" onclick="getDOMTasksByStatus(this, 'pending');">Devam Eden Görevler</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Tamamlanan Görevler</a>
+                    <li class="nav-item status-type">
+                        <a class="nav-link completed" href="javascript:;" onclick="getDOMTasksByStatus(this, 'completed');">Tamamlanan Görevler</a>
                     </li>
                 </ul>
             </div>
