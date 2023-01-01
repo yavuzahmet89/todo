@@ -1,10 +1,10 @@
 "use-strict";
 
-var taskObject = new Task();
+let taskObject = new Task(new StorageLocal());
 
-var taskInputs = document.querySelector('#taskInputs');
-var taskInput = taskInputs.querySelector('#task');
-var taskList = document.querySelector('#taskList');
+let taskInputs = document.querySelector('#taskInputs');
+let taskInput = taskInputs.querySelector('#task');
+let taskList = document.querySelector('#taskList');
 
 document.addEventListener('DOMContentLoaded', function () {
     if (taskObject.getTasks().length) {
@@ -70,7 +70,13 @@ function getActiveStatusType() {
 }
 
 function getDOMTasksByStatus(element, value = '') {
-    setStatusType(element);
+    let _element = element;
+
+    if (typeof element === 'undefined' || element === null) {
+        _element = document.querySelector('#statusTypes li a.pending');
+    }
+
+    setStatusType(_element);
 
     if (value === '' || value === 'all') {
         getDOMTasks();

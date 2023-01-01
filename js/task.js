@@ -6,13 +6,22 @@ class Task {
         "pending": "pending",
         "completed": "completed"
     };
+    storage = null;
+
+    constructor(storage) {
+        this.storage = storage;
+
+        if (this.storage.getItem('tasks')) {
+            this.tasks = JSON.parse(this.storage.getItem('tasks'));
+        }
+    }
 
     getTasks(key = '', value = '') {
         return this.getTasksByKey(key, value);
     }
 
     getTasksByKey(key = '', value = '') {
-        if (key === '' && value === '') {
+        if (this.tasks.length === 0 || (key === '' && value === '')) {
             return this.tasks;
         }
 
@@ -81,7 +90,10 @@ class Task {
             "status": this.statuses.pending
         };
 
-        return this.tasks.push(taskData);
+        let tasks = this.tasks.push(taskData);
+        this.storage.setItem('tasks', JSON.stringify(this.tasks));
+
+        return tasks;
     }
 
     editTask(id, key, value) {
@@ -103,6 +115,7 @@ class Task {
 
         let index = this.getTaskIndexById(id);
         this.tasks[index] = taskData;
+        this.storage.setItem('tasks', JSON.stringify(this.tasks));
 
         return true;
     }
@@ -123,6 +136,8 @@ class Task {
         if (typeof task !== 'object') {
             return false;
         }
+
+        this.storage.setItem('tasks', JSON.stringify(this.tasks));
 
         return true;
     }
